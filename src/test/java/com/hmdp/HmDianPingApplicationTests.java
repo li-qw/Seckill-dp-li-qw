@@ -5,6 +5,7 @@ import com.hmdp.utils.RedisidWorker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -16,13 +17,10 @@ class HmDianPingApplicationTests {
 @Autowired
 private ShopServiceImpl shopService;
 @Autowired
+private StringRedisTemplate stringRedisTemplate;
+//@Autowired
 private RedisidWorker redisidWorker;
     private ExecutorService es= Executors.newFixedThreadPool(500);
-
-    @Test
-    void contextLoads() {
-       shopService.saveShop(1L,10L);
-    }
     @Test
     void testIdWorker() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(300);
@@ -44,4 +42,13 @@ private RedisidWorker redisidWorker;
         latch.await();
         long end = System.currentTimeMillis();
         System.out.println("time = " + (end - begin));
+}
+@Test
+    void test(){
+        String a="aaaaa";
+    Boolean add = stringRedisTemplate.opsForZSet().add("shop:1:liked", a, 1);
+    if (add==false){
+      stringRedisTemplate.opsForZSet().remove("shop:1:liked",a);
+    }
+    System.out.println(add);
 }}
